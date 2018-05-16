@@ -6,13 +6,13 @@ bool Doodads::load(BinaryReader& reader, Terrain& terrain) {
 		std::cout << "Invalid war3map.w3e file: Magic number is not W3do\n";
 		return false;
 	}
-	const uint32_t version = reader.read<uint32_t>();
+	uint32_t version = reader.read<uint32_t>();
 	if (version != 7 && version != 8) {
 		std::cout << "Unknown war3map.doo version: " << version << " Attempting to load but may crash\nPlease send this map to eejin\n";
 	}
 
 	// Subversion
-	reader.read<uint32_t>();
+	subversion = reader.read<uint32_t>();
 
 	const int doodads_count = reader.read<uint32_t>();
 
@@ -63,6 +63,61 @@ bool Doodads::load(BinaryReader& reader, Terrain& terrain) {
 
 	return true;
 }
+
+void Doodads::save() const
+{
+	BinaryWriter writer;
+	writer.write_string("W3do");
+	writer.write<uint32_t>(version);
+	writer.write<uint32_t>(subversion);
+
+	writer.write<uint32_t>(doodads.size());
+
+	for (int i = 0; i < doodads.size(); i++) {
+		auto&& d = doodads[i];
+		writer.write_string(d.id);
+		writer.write<uint32_t>(d.variation);
+		writer.write<glm::vec3>(d.position + glm::vec3(map.terrain.offset, 0));
+		writer.write<float>(d.angle);
+		writer.write<glm::vec3>(d.scale);
+		uint8_t flag = 2;
+		switch (d.state)
+		{
+		case DoodadState::invisible_non_solid:
+			flag = 0;
+			break;
+		case DoodadState::visible_non_solid:
+			flag = 1;
+			break;
+		}
+		writer.write<uint8_t>(flag);
+		writer.write<uint8_t>(d.life);
+
+		if (version >= 8) {
+			// For now just remove item table
+			writer.write<uint32_t>(0);
+			writer.write<uint32_t>(0);
+		}
+
+		writer.write<uint32_t>(i);
+	}
+
+	HANDLE handle;
+	bool success = SFileCreateFile(hierarchy.map.handle, "war3map.doo", 0, writer.buffer.size(), 0, MPQ_FILE_COMPRESS | MPQ_FILE_REPLACEEXISTING, &handle);
+	if (!success) {
+		std::cout << GetLastError() << "\n";
+	}
+
+	success = SFileWriteFile(handle, writer.buffer.data(), writer.buffer.size(), MPQ_COMPRESSION_ZLIB);
+	if (!success) {
+		std::cout << "Writing to file failed: " << GetLastError() << "\n";
+	}
+	success = SFileFinishFile(handle);
+	if (!success) {
+		std::cout << "Finishing write failed: " << GetLastError() << "\n";
+	}
+}
+
 
 void Doodads::load_destructible_modifications(BinaryReader& reader) {
 	const int version = reader.read<uint32_t>();

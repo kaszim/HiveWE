@@ -19,6 +19,9 @@ struct Doodad {
 };
 
 class Doodads {
+	uint32_t version;
+	uint32_t subversion;
+
 	slk::SLK doodads_slk;
 	slk::SLK doodads_meta_slk;
 	slk::SLK destructibles_slk;
@@ -31,6 +34,7 @@ class Doodads {
 	std::shared_ptr<Shader> shader;
 public:
 	bool load(BinaryReader& reader, Terrain& terrain);
+	void save() const;
 	void load_destructible_modifications(BinaryReader& reader);
 	void load_doodad_modifications(BinaryReader& reader);
 	void create();
