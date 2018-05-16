@@ -201,6 +201,18 @@
     <ClCompile Include="GroundTexture.cpp">
       <Filter>Source Files\Base\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DoodadPalette.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DoodadPalette.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoodadPalette.cpp">
+      <Filter>Source Files\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="DoodadBrush.cpp">
+      <Filter>Source Files\Base\Brush</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -302,6 +314,12 @@
     <ClInclude Include="GroundTexture.h">
       <Filter>Header Files\Base\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_DoodadPalette.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DoodadBrush.h">
+      <Filter>Header Files\Base\Brush</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="HiveWE.h">
@@ -347,6 +365,12 @@
       <Filter>Header Files\Menus</Filter>
     </CustomBuild>
     <CustomBuild Include="TilePather.h">
+      <Filter>Header Files\Menus</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DoodadPalette.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DoodadPalette.h">
       <Filter>Header Files\Menus</Filter>
     </CustomBuild>
   </ItemGroup>

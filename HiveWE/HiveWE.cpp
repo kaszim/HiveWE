@@ -39,6 +39,7 @@ HiveWE::HiveWE(QWidget *parent) : QMainWindow(parent) {
 		});
 	});
 
+	connect(ui.actionDoodad_Palette, &QAction::triggered, [this]() { new DoodadPalette(this); });
 	connect(ui.actionTerrain_Palette, &QAction::triggered, [this]() { new TerrainPalette(this); });
 }
 

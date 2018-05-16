@@ -65,6 +65,7 @@ namespace fs = std::filesystem;
 #include "Brush.h"
 #include "PathingBrush.h"
 #include "TerrainBrush.h"
+#include "DoodadBrush.h"
 #include "Map.h"
 
 #include "Camera.h"
@@ -73,6 +74,7 @@ namespace fs = std::filesystem;
 
 #include "PathingPallete.h"
 #include "TerrainPalette.h"
+#include "DoodadPalette.h"
 #include "TilePicker.h"
 #include "TileSetter.h"
 #include "TilePather.h"
