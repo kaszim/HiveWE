@@ -14,6 +14,7 @@ public:
 private:
 	bool event(QEvent *e) override;
 	Ui::DoodadPalette ui;
+	DoodadTypesModel* model;
 
 	DoodadBrush brush;
 };

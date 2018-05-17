@@ -7,7 +7,7 @@ public:
 	Doodads doodads;
 	Units units;
 
-	DoodadTypes doodadTypes;
+	DoodadTypes doodad_types;
 
 	Brush* brush = nullptr;
 

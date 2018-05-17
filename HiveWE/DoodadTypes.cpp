@@ -36,15 +36,25 @@ DoodadTypes::~DoodadTypes()
 {
 }
 
+size_t DoodadTypes::size()
+{
+	return types.size();
+}
+
+DoodadType & DoodadTypes::operator()(size_t index)
+{
+	return types[index];
+}
+
 Q_INVOKABLE int DoodadTypesModel::rowCount(const QModelIndex &parent) const
 {
-	return 1;
+	return doodadTypes.size();
 }
 
 Q_INVOKABLE QVariant DoodadTypesModel::data(const QModelIndex &index, int role) const
 {
 	if (role == Qt::DisplayRole) {
-		return "Hello World";
+		return QString::fromStdString(doodadTypes(index.row()).comment);
 	}
 	return QVariant();
 }
