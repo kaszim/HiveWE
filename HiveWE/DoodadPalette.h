@@ -11,6 +11,9 @@ public:
 	DoodadPalette(QWidget *parent = nullptr);
 	~DoodadPalette();
 
+protected:
+
+
 private:
 	bool event(QEvent *e) override;
 	Ui::DoodadPalette ui;

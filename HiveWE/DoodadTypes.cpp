@@ -25,7 +25,8 @@ void DoodadTypes::load() {
 			std::stof(row[x++]),
 			std::stof(row[x++]),
 			std::stof(row[x++]),
-			static_cast<bool>(std::stoi(row[x++]))
+			static_cast<bool>(std::stoi(row[x++])),
+			std::stoi(row[doodads_slk.header_to_column["numVar"]])
 		};
 		types.emplace_back(type);
 	}
@@ -55,6 +56,11 @@ Q_INVOKABLE QVariant DoodadTypesModel::data(const QModelIndex &index, int role) 
 {
 	if (role == Qt::DisplayRole) {
 		return QString::fromStdString(doodadTypes(index.row()).comment);
+	}
+	else if (role == 1) {
+		QVariant qv;
+		qv.setValue(doodadTypes(index.row()));
+		return qv;
 	}
 	return QVariant();
 }

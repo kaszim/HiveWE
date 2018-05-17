@@ -5,6 +5,10 @@ DoodadPalette::DoodadPalette(QWidget *parent)
 	: QDialog(parent)
 {
 	ui.setupUi(this);
+	connect(ui.doodadListView, &QListView::pressed, [this](const QModelIndex &index) {
+		auto doodad = this->model->data(index, 1).value<DoodadType>();
+		this->brush.set_doodad(&doodad);
+	});
 
 	setAttribute(Qt::WA_DeleteOnClose);
 	show();

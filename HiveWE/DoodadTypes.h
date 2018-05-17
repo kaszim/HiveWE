@@ -14,6 +14,8 @@ struct DoodadType {
 	float minScale;
 	float maxScale;
 	bool canPlaceRandScale;
+
+	int numVar;
 };
 
 class DoodadTypes
@@ -32,13 +34,15 @@ public:
 	DoodadType& operator()(size_t index);
 };
 
+Q_DECLARE_METATYPE(DoodadType)
+
 class DoodadTypesModel : public QAbstractListModel {
 public:
 	DoodadTypesModel(DoodadTypes &dt, QObject *parent = nullptr) : doodadTypes{ dt }, QAbstractListModel(parent) {};
+	virtual Q_INVOKABLE QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override;
 protected:
 	// Inherited via QAbstractListModel
 	virtual Q_INVOKABLE int rowCount(const QModelIndex & parent = QModelIndex()) const override;
-	virtual Q_INVOKABLE QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override;
 private:
 	DoodadTypes & doodadTypes;
 };
