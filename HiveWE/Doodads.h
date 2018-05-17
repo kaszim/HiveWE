@@ -32,6 +32,8 @@ class Doodads {
 	std::unordered_map<std::string, std::shared_ptr<StaticMesh>> id_to_mesh;
 
 	std::shared_ptr<Shader> shader;
+
+	void load_mesh(std::string id, int variation);
 public:
 	bool load(BinaryReader& reader, Terrain& terrain);
 	void save() const;

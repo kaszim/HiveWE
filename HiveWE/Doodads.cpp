@@ -139,71 +139,74 @@ load_modification_table(reader, doodads_slk, doodads_meta_slk, false, true);
 	load_modification_table(reader, doodads_slk, doodads_meta_slk, true, true);
 }
 
+void Doodads::load_mesh(std::string id, int variation) {
+	std::string full_id = id + std::to_string(variation);
+	if (id_to_mesh.find(full_id) != id_to_mesh.end()) {
+		return;
+	}
+
+	if (id == "D00E") {
+		std::cout << "\n";
+	}
+
+	fs::path mesh_path;
+	std::string variations;
+	std::string replaceable_id;
+	fs::path texture_name;
+
+	if (doodads_slk.header_to_row.find(id) != doodads_slk.header_to_row.end()) {
+		// Is doodad
+		mesh_path = doodads_slk.data("file", id);
+		variations = doodads_slk.data("numVar", id);
+	}
+	else {
+		// Is destructible
+		mesh_path = destructibles_slk.data("file", id);
+		variations = destructibles_slk.data("numVar", id);
+
+		replaceable_id = destructibles_slk.data("texID", id);
+		texture_name = destructibles_slk.data("texFile", id);
+		texture_name.replace_extension(".blp");
+	}
+
+	const std::string stem = mesh_path.stem().string();
+	mesh_path.replace_filename(stem + (variations == "1" ? "" : std::to_string(variation)));
+	mesh_path.replace_extension(".mdx");
+
+	// Use base model when variation doesn't exist
+	if (!hierarchy.file_exists(mesh_path)) {
+		mesh_path.remove_filename() /= stem + ".mdx";
+	}
+
+	// Mesh doesnt exist at all
+	if (!hierarchy.file_exists(mesh_path)) {
+		std::cout << "Invalid model file for " << id << " With file path: " << mesh_path << "\n";
+		id_to_mesh.emplace(full_id, resource_manager.load<StaticMesh>("Objects/Invalidmodel/Invalidmodel.mdx"));
+	}
+
+	// Switch around the texture in the replaceable_id table
+	std::string replaceable_texture;
+	if (is_number(replaceable_id) && texture_name != "_.blp") {
+		replaceable_texture = mdx::replacable_id_to_texture[std::stoi(replaceable_id)];
+		mdx::replacable_id_to_texture[std::stoi(replaceable_id)] = texture_name.string();
+	}
+
+	id_to_mesh.emplace(full_id, resource_manager.load<StaticMesh>(mesh_path.string()));
+
+	// Switch it back
+	if (is_number(replaceable_id) && texture_name != "_.blp") {
+		mdx::replacable_id_to_texture[std::stoi(replaceable_id)] = replaceable_texture;
+	}
+}
+
 void Doodads::create() {
 	for (auto&& i : doodads) {
 		// Do this properly somewhere else
 		i.matrix = glm::translate(i.matrix, i.position / 128.f);
 		i.matrix = glm::scale(i.matrix, glm::vec3(1 / 128.f, 1 / 128.f, 1 / 128.f) * i.scale);
 		i.matrix = glm::rotate(i.matrix, i.angle, glm::vec3(0, 0, 1));
-
-
-		std::string full_id = i.id + std::to_string(i.variation);
-		if (id_to_mesh.find(full_id) != id_to_mesh.end()) {
-			continue;
-		}
-
-		if (i.id == "D00E") {
-			std::cout << "\n";
-		}
-
-		fs::path mesh_path;
-		std::string variations;
-		std::string replaceable_id;
-		fs::path texture_name;
-
-		if (doodads_slk.header_to_row.find(i.id) != doodads_slk.header_to_row.end()) {
-			// Is doodad
-			mesh_path = doodads_slk.data("file", i.id);
-			variations = doodads_slk.data("numVar", i.id);
-		} else {
-			// Is destructible
-			mesh_path = destructibles_slk.data("file", i.id);
-			variations = destructibles_slk.data("numVar", i.id);
-
-			replaceable_id = destructibles_slk.data("texID", i.id);
-			texture_name = destructibles_slk.data("texFile", i.id);
-			texture_name.replace_extension(".blp");
-		}
-
-		const std::string stem = mesh_path.stem().string();
-		mesh_path.replace_filename(stem + (variations == "1" ? "" : std::to_string(i.variation)));
-		mesh_path.replace_extension(".mdx");
-
-		// Use base model when variation doesn't exist
-		if (!hierarchy.file_exists(mesh_path)) {
-			mesh_path.remove_filename() /= stem + ".mdx";
-		}
-
-		// Mesh doesnt exist at all
-		if (!hierarchy.file_exists(mesh_path)) {
-			std::cout << "Invalid model file for " << i.id << " With file path: " << mesh_path << "\n";
-			id_to_mesh.emplace(full_id, resource_manager.load<StaticMesh>("Objects/Invalidmodel/Invalidmodel.mdx"));
-			continue;
-		}
-
-		// Switch around the texture in the replaceable_id table
-		std::string replaceable_texture;
-		if (is_number(replaceable_id) && texture_name != "_.blp") {
-			replaceable_texture = mdx::replacable_id_to_texture[std::stoi(replaceable_id)];
-			mdx::replacable_id_to_texture[std::stoi(replaceable_id)] = texture_name.string();
-		}
-
-		id_to_mesh.emplace(full_id, resource_manager.load<StaticMesh>(mesh_path.string()));
-
-		// Switch it back
-		if (is_number(replaceable_id) && texture_name != "_.blp") {
-			mdx::replacable_id_to_texture[std::stoi(replaceable_id)] = replaceable_texture;
-		}
+		
+		load_mesh(i.id, i.variation);
 	}
 }
 
@@ -211,60 +214,9 @@ std::shared_ptr<StaticMesh> Doodads::get_mesh(std::string id, int variation) {
 	std::string full_id = id + std::to_string(variation);
 	auto pair = id_to_mesh.find(full_id);
 	if (pair == id_to_mesh.end()) {
-
-		if (id == "D00E") {
-			std::cout << "\n";
-		}
-
-		fs::path mesh_path;
-		std::string variations;
-		std::string replaceable_id;
-		fs::path texture_name;
-
-		if (doodads_slk.header_to_row.find(id) != doodads_slk.header_to_row.end()) {
-			// Is doodad
-			mesh_path = doodads_slk.data("file", id);
-			variations = doodads_slk.data("numVar", id);
-		}
-		else {
-			// Is destructible
-			mesh_path = destructibles_slk.data("file", id);
-			variations = destructibles_slk.data("numVar", id);
-
-			replaceable_id = destructibles_slk.data("texID", id);
-			texture_name = destructibles_slk.data("texFile", id);
-			texture_name.replace_extension(".blp");
-		}
-
-		const std::string stem = mesh_path.stem().string();
-		mesh_path.replace_filename(stem + (variations == "1" ? "" : std::to_string(variation)));
-		mesh_path.replace_extension(".mdx");
-
-		// Use base model when variation doesn't exist
-		if (!hierarchy.file_exists(mesh_path)) {
-			mesh_path.remove_filename() /= stem + ".mdx";
-		}
-
-		// Mesh doesnt exist at all
-		if (!hierarchy.file_exists(mesh_path)) {
-			std::cout << "Invalid model file for " << id << " With file path: " << mesh_path << "\n";
-			id_to_mesh.emplace(full_id, resource_manager.load<StaticMesh>("Objects/Invalidmodel/Invalidmodel.mdx"));
-		}
-
-		// Switch around the texture in the replaceable_id table
-		std::string replaceable_texture;
-		if (is_number(replaceable_id) && texture_name != "_.blp") {
-			replaceable_texture = mdx::replacable_id_to_texture[std::stoi(replaceable_id)];
-			mdx::replacable_id_to_texture[std::stoi(replaceable_id)] = texture_name.string();
-		}
-
-		id_to_mesh.emplace(full_id, resource_manager.load<StaticMesh>(mesh_path.string()));
-
-		// Switch it back
-		if (is_number(replaceable_id) && texture_name != "_.blp") {
-			mdx::replacable_id_to_texture[std::stoi(replaceable_id)] = replaceable_texture;
-		}
-		return get_mesh(id, variation);
+		// Mesh is not loaded, so load it
+		load_mesh(id, variation);
+		return id_to_mesh[full_id];
 	}
 	return pair->second;
 }
