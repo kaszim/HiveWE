@@ -61,6 +61,7 @@ namespace fs = std::filesystem;
 #include "Terrain.h"
 #include "PathingMap.h"
 #include "Doodads.h"
+#include "DoodadTypes.h"
 #include "Units.h"
 #include "Brush.h"
 #include "PathingBrush.h"

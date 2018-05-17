@@ -24,6 +24,7 @@ void Map::load(const fs::path& path) {
 	}
 
 	// Doodads
+	doodadTypes.load();
 	BinaryReader war3map_doo(hierarchy.map.file_open("war3map.doo").read());
 	success = doodads.load(war3map_doo, terrain);
 

@@ -7,6 +7,8 @@ public:
 	Doodads doodads;
 	Units units;
 
+	DoodadTypes doodadTypes;
+
 	Brush* brush = nullptr;
 
 	bool units_loaded = false;
