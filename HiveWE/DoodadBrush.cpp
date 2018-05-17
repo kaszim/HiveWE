@@ -10,7 +10,12 @@ void DoodadBrush::apply() {
 void DoodadBrush::set_doodad(DoodadType* dt) {
 	doodad = Doodad{
 		dt->doodID,
-		dt->numVar
+		0,
+		glm::vec3(position.x, position.y, 0.f),
+		glm::vec3(1.f, 1.f, 1.f),
+		5.7f,
+		DoodadState::visible_solid,
+		255,
 	};
 }
 
@@ -19,10 +24,12 @@ void DoodadBrush::set_position(const glm::vec2 & position) {
 }
 
 void DoodadBrush::render(Terrain & terrain) const {
-	/*auto i = map.doodads.get_doodad();
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, 0.f));
-	model = glm::scale(model, glm::vec3(1 / 128.f, 1 / 128.f, 1 / 128.f) * i.scale);
-	model = glm::rotate(model, i.angle, glm::vec3(0, 0, 1));
+	if (doodad.id == "") {
+		return;
+	}
+	auto matrix = glm::translate(glm::mat4(1.f), glm::vec3(position, 0.f));
+	matrix = glm::scale(matrix, glm::vec3(1 / 128.f, 1 / 128.f, 1 / 128.f) * doodad.scale);
+	matrix = glm::rotate(matrix, doodad.angle, glm::vec3(0, 0, 1));
 
-	map.doodads.get_mesh()->render_queue(camera.projection_view * model);*/
+	map.doodads.get_mesh(doodad.id, doodad.variation)->render_queue(matrix);
 }

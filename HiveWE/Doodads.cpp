@@ -207,6 +207,68 @@ void Doodads::create() {
 	}
 }
 
+std::shared_ptr<StaticMesh> Doodads::get_mesh(std::string id, int variation) {
+	std::string full_id = id + std::to_string(variation);
+	auto pair = id_to_mesh.find(full_id);
+	if (pair == id_to_mesh.end()) {
+
+		if (id == "D00E") {
+			std::cout << "\n";
+		}
+
+		fs::path mesh_path;
+		std::string variations;
+		std::string replaceable_id;
+		fs::path texture_name;
+
+		if (doodads_slk.header_to_row.find(id) != doodads_slk.header_to_row.end()) {
+			// Is doodad
+			mesh_path = doodads_slk.data("file", id);
+			variations = doodads_slk.data("numVar", id);
+		}
+		else {
+			// Is destructible
+			mesh_path = destructibles_slk.data("file", id);
+			variations = destructibles_slk.data("numVar", id);
+
+			replaceable_id = destructibles_slk.data("texID", id);
+			texture_name = destructibles_slk.data("texFile", id);
+			texture_name.replace_extension(".blp");
+		}
+
+		const std::string stem = mesh_path.stem().string();
+		mesh_path.replace_filename(stem + (variations == "1" ? "" : std::to_string(variation)));
+		mesh_path.replace_extension(".mdx");
+
+		// Use base model when variation doesn't exist
+		if (!hierarchy.file_exists(mesh_path)) {
+			mesh_path.remove_filename() /= stem + ".mdx";
+		}
+
+		// Mesh doesnt exist at all
+		if (!hierarchy.file_exists(mesh_path)) {
+			std::cout << "Invalid model file for " << id << " With file path: " << mesh_path << "\n";
+			id_to_mesh.emplace(full_id, resource_manager.load<StaticMesh>("Objects/Invalidmodel/Invalidmodel.mdx"));
+		}
+
+		// Switch around the texture in the replaceable_id table
+		std::string replaceable_texture;
+		if (is_number(replaceable_id) && texture_name != "_.blp") {
+			replaceable_texture = mdx::replacable_id_to_texture[std::stoi(replaceable_id)];
+			mdx::replacable_id_to_texture[std::stoi(replaceable_id)] = texture_name.string();
+		}
+
+		id_to_mesh.emplace(full_id, resource_manager.load<StaticMesh>(mesh_path.string()));
+
+		// Switch it back
+		if (is_number(replaceable_id) && texture_name != "_.blp") {
+			mdx::replacable_id_to_texture[std::stoi(replaceable_id)] = replaceable_texture;
+		}
+		return get_mesh(id, variation);
+	}
+	return pair->second;
+}
+
 void Doodads::render() {
 	for (auto&& i : doodads) {
 		//if (!camera.is_visible(i.position / 128.f)) {
