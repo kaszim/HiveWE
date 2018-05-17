@@ -8,6 +8,6 @@ public:
 	void set_doodad(DoodadType*);
 
 protected:
-	Doodad doodad;
+	mutable Doodad doodad;
 	glm::vec2 position;
 };

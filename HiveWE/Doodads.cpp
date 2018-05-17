@@ -269,6 +269,10 @@ std::shared_ptr<StaticMesh> Doodads::get_mesh(std::string id, int variation) {
 	return pair->second;
 }
 
+void Doodads::insert(Doodad d) {
+	doodads.emplace_back(d);
+}
+
 void Doodads::render() {
 	for (auto&& i : doodads) {
 		//if (!camera.is_visible(i.position / 128.f)) {

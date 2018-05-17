@@ -40,4 +40,5 @@ public:
 	void create();
 	void render();
 	std::shared_ptr<StaticMesh> get_mesh(std::string id, int variation);
+	void insert(Doodad d);
 };
