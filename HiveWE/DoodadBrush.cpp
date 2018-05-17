@@ -2,7 +2,9 @@
 #include "DoodadBrush.h"
 
 void DoodadBrush::apply() {
-	map.doodads.insert(doodad);
+	auto copy = doodad;
+	copy.position *= 128.f;
+	map.doodads.insert(copy);
 }
 
 void DoodadBrush::set_doodad(DoodadType* dt) {

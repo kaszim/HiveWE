@@ -6,7 +6,7 @@ bool Doodads::load(BinaryReader& reader, Terrain& terrain) {
 		std::cout << "Invalid war3map.w3e file: Magic number is not W3do\n";
 		return false;
 	}
-	uint32_t version = reader.read<uint32_t>();
+	version = reader.read<uint32_t>();
 	if (version != 7 && version != 8) {
 		std::cout << "Unknown war3map.doo version: " << version << " Attempting to load but may crash\nPlease send this map to eejin\n";
 	}
