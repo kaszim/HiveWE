@@ -221,7 +221,7 @@ std::shared_ptr<StaticMesh> Doodads::get_mesh(std::string id, int variation) {
 	return pair->second;
 }
 
-void Doodads::insert(Doodad d) {
+void Doodads::emplace_back(Doodad &d) {
 	doodads.emplace_back(d);
 }
 

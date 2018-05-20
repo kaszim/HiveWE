@@ -4,7 +4,7 @@
 void DoodadBrush::apply() {
 	auto copy = doodad;
 	copy.position *= 128.f;
-	map.doodads.insert(copy);
+	map.doodads.emplace_back(copy);
 }
 
 void DoodadBrush::set_doodad(DoodadType* dt) {
