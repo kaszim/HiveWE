@@ -3,19 +3,12 @@ struct DoodadType {
 	std::string doodID;
 	std::string category;
 	std::string tilesets;
-	int tilesetSpecific;
 	std::string file;
 	std::string comment;
-	std::string Name;
-	std::string doodClass;
-	std::string soundLoop;
-	int selSize;
-	float defScale;
 	float minScale;
 	float maxScale;
-	bool canPlaceRandScale;
-
 	int numVar;
+	float fixedRot;
 };
 
 class DoodadTypes
@@ -23,6 +16,7 @@ class DoodadTypes
 private:
 	slk::SLK doodads_slk;
 	std::vector<DoodadType> types;
+	std::unordered_map<std::string, std::vector<DoodadType*> > categories;
 
 public:
 	void load();
@@ -30,8 +24,10 @@ public:
 	~DoodadTypes();
 
 	size_t size();
+	size_t size(std::string category);
 
-	DoodadType& operator()(size_t index);
+	DoodadType& operator[](size_t index);
+	DoodadType& operator()(size_t index, std::string category);
 };
 
 Q_DECLARE_METATYPE(DoodadType)

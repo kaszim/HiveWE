@@ -10,25 +10,36 @@ void DoodadTypes::load() {
 	doodads_slk = slk::SLK("Doodads/Doodads.slk");
 	for (auto y = 1; y < doodads_slk.rows; y++) {
 		auto row = doodads_slk.table_data[y];
-		auto x = 0;
-		auto type = DoodadType{
-			row[x++],
-			row[x++],
-			row[x++],
-			std::stoi(row[x++]),
-			row[x++],
-			row[x++],
-			row[x++],
-			row[x++],
-			row[x++],
-			std::stoi(row[x++]),
-			std::stof(row[x++]),
-			std::stof(row[x++]),
-			std::stof(row[x++]),
-			static_cast<bool>(std::stoi(row[x++])),
-			std::stoi(row[doodads_slk.header_to_column["numVar"]])
-		};
-		types.emplace_back(type);
+		types.emplace_back(DoodadType{
+			row[0],
+			row[1],
+			row[2],
+			row[4],
+			row[5],
+			std::stof(row[11]),
+			std::stof(row[12]),
+			std::stoi(row[20]),
+			std::stof(row[27]) == -1.f ? 0 : std::stof(row[27])
+			});
+		categories[types[y - 1].category].emplace_back(&types[y - 1]);
+	}
+
+	auto destructibles_slk = slk::SLK("Units/DestructableData.slk");
+
+	for (auto y = 1; y < destructibles_slk.rows; y++) {
+		auto row = destructibles_slk.table_data[y];
+		types.emplace_back(DoodadType{
+			row[0],
+			row[1],
+			row[2],
+			row[4],
+			row[9],
+			std::stof(row[27]),
+			std::stof(row[28]),
+			std::stoi(row[21]),
+			std::stof(row[25]) == -1.f ? 0 : std::stof(row[25])
+			});
+		categories[types[y - 1].category].emplace_back(&types[y - 1]);
 	}
 }
 
@@ -42,9 +53,18 @@ size_t DoodadTypes::size()
 	return types.size();
 }
 
-DoodadType & DoodadTypes::operator()(size_t index)
+size_t DoodadTypes::size(std::string category)
+{
+	return categories[category].size();
+}
+
+DoodadType & DoodadTypes::operator[](size_t index)
 {
 	return types[index];
+}
+
+DoodadType& DoodadTypes::operator()(size_t index, std::string category) {
+	return *categories[category][index];
 }
 
 Q_INVOKABLE int DoodadTypesModel::rowCount(const QModelIndex &parent) const
@@ -55,11 +75,11 @@ Q_INVOKABLE int DoodadTypesModel::rowCount(const QModelIndex &parent) const
 Q_INVOKABLE QVariant DoodadTypesModel::data(const QModelIndex &index, int role) const
 {
 	if (role == Qt::DisplayRole) {
-		return QString::fromStdString(doodadTypes(index.row()).comment);
+		return QString::fromStdString(doodadTypes[index.row()].comment);
 	}
 	else if (role == 1) {
 		QVariant qv;
-		qv.setValue(doodadTypes(index.row()));
+		qv.setValue(doodadTypes[index.row()]);
 		return qv;
 	}
 	return QVariant();
