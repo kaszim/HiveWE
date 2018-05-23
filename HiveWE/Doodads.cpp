@@ -95,7 +95,7 @@ void Doodads::save() const
 
 		if (version >= 8) {
 			// For now just remove item table
-			writer.write<uint32_t>(0);
+			writer.write<uint32_t>(-1);
 			writer.write<uint32_t>(0);
 		}
 
