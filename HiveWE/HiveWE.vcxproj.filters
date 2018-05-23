@@ -216,6 +216,15 @@
     <ClCompile Include="DoodadTypes.cpp">
       <Filter>Source Files\Base</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DoodadListView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DoodadListView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoodadListView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -378,6 +387,9 @@
     </CustomBuild>
     <CustomBuild Include="DoodadPalette.h">
       <Filter>Header Files\Menus</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DoodadListView.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

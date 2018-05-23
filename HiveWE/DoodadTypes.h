@@ -29,17 +29,3 @@ public:
 	DoodadType& operator[](size_t index);
 	DoodadType& operator()(size_t index, std::string category);
 };
-
-Q_DECLARE_METATYPE(DoodadType)
-
-class DoodadTypesModel : public QAbstractListModel {
-public:
-	DoodadTypesModel(DoodadTypes &dt, QObject *parent = nullptr) : doodadTypes{ dt }, QAbstractListModel(parent) {};
-	virtual Q_INVOKABLE QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override;
-protected:
-	// Inherited via QAbstractListModel
-	virtual Q_INVOKABLE int rowCount(const QModelIndex & parent = QModelIndex()) const override;
-private:
-	DoodadTypes & doodadTypes;
-};
-

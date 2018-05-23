@@ -5,7 +5,11 @@ DoodadPalette::DoodadPalette(QWidget *parent)
 	: QDialog(parent)
 {
 	ui.setupUi(this);
-	connect(ui.doodadListView, &QListView::pressed, [this](const QModelIndex &index) {
+
+	model = new DoodadTypesModel(map.doodad_types, this);
+	ui.doodadListView->setModel(model);
+
+	connect(ui.doodadListView, &DoodadListView::selectedIndexChanged, [this](const QModelIndex &index) {
 		auto doodad = this->model->data(index, 1).value<DoodadType>();
 		this->brush.set_doodad(&doodad);
 	});
@@ -15,17 +19,6 @@ DoodadPalette::DoodadPalette(QWidget *parent)
 
 	brush.create();
 	map.brush = &brush;
-
-	model = new DoodadTypesModel(map.doodad_types, this);
-	/*model = new QStringListModel(this);
-
-	QStringList list;
-	for (auto&& row : map.doodads.get_doodads_slk().table_data) {
-	list << QString::fromStdString(row[5]);
-	}
-	model->setStringList(list);*/
-
-	ui.doodadListView->setModel(model);
 }
 
 DoodadPalette::~DoodadPalette()
