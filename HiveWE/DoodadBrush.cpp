@@ -13,15 +13,15 @@ void DoodadBrush::set_doodad(DoodadType* dt) {
 		0,
 		glm::vec3(position.x, position.y, 0.f),
 		glm::vec3(1.f, 1.f, 1.f),
-		5.7f,
+		dt->fixedRot,
 		DoodadState::visible_solid,
 		255
 	};
 }
 
 void DoodadBrush::set_position(const glm::vec2 & position) {
-	doodad.position = glm::vec3(position, 0.f);
-	this->position = position;
+	auto center_position = glm::floor(position * 2.f) * .5f;
+	doodad.position = glm::vec3(center_position, input_handler.mouse_world.z) + glm::vec3(.25f, .25f, 0);
 }
 
 void DoodadBrush::render(Terrain & terrain) const {

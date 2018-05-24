@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>286</width>
-    <height>584</height>
+    <width>350</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,11 +36,18 @@
     </widget>
    </item>
    <item>
-    <widget class="DoodadListView" name="doodadListView"/>
+    <widget class="DoodadListView" name="doodadListView" native="true"/>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>DoodadListView</class>
+   <extends>QWidget</extends>
+   <header>doodadlistview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
