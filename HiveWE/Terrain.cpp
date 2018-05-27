@@ -495,7 +495,10 @@ float Terrain::corner_height(const Corner corner) {
 }
 
 float Terrain::corner_height(const int x, const int y) const {
-	return corners[x][y].ground_height + corners[x][y].layer_height - 2.0;
+	if (x < width && y < height) {
+		return corners[x][y].ground_height + corners[x][y].layer_height - 2.0;
+	}
+	return 0.f;
 }
 
 float Terrain::corner_water_height(const Corner corner) const {

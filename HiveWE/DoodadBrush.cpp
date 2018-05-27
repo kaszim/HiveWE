@@ -11,7 +11,7 @@ void DoodadBrush::set_doodad(DoodadType* dt) {
 	doodad = Doodad{
 		dt->doodID,
 		0,
-		glm::vec3(position.x, position.y, 0.f),
+		this->position,
 		glm::vec3(1.f, 1.f, 1.f),
 		dt->fixedRot,
 		DoodadState::visible_solid,
@@ -21,7 +21,9 @@ void DoodadBrush::set_doodad(DoodadType* dt) {
 
 void DoodadBrush::set_position(const glm::vec2 & position) {
 	auto center_position = glm::floor(position * 2.f) * .5f;
-	doodad.position = glm::vec3(center_position, input_handler.mouse_world.z) + glm::vec3(.25f, .25f, 0);
+	float height = map.terrain.corner_height(static_cast<int>(center_position.x), static_cast<int>(center_position.y));
+	this->position = glm::vec3(center_position, height);
+	doodad.position = this->position;
 }
 
 void DoodadBrush::render(Terrain & terrain) const {

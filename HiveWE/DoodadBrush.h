@@ -9,5 +9,5 @@ public:
 
 protected:
 	mutable Doodad doodad;
-	glm::vec2 position;
+	glm::vec3 position;
 };
