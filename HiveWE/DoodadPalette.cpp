@@ -13,6 +13,22 @@ DoodadPalette::DoodadPalette(QWidget *parent)
 		auto doodad = this->model->data(index, 1).value<DoodadType>();
 		this->brush.set_doodad(&doodad);
 	});
+	auto menu = new QMenu(this);
+
+	auto action = new QAction("Random Angle (if possible)", menu);
+	action->setCheckable(true);
+	connect(action, &QAction::toggled, [](bool set) {
+		// DO SOMETHING
+	});
+	menu->addAction(action);
+
+	action = new QAction("Random Scale  (if possible)", menu);
+	action->setCheckable(true);
+	connect(action, &QAction::toggled, [](bool set) {
+		// DO SOMETHING
+	});
+	menu->addAction(action);
+	ui.settingsButton->setMenu(menu);
 
 	setAttribute(Qt::WA_DeleteOnClose);
 	show();
